@@ -26,7 +26,7 @@ jobs:
         run: |
           gh workflow run codedeploy-dev.yml \
           --ref=multi_tenant_dev \
-          --repo prashant-cloudbolt/workflow-target
+          --repo prashant-cloudbolt/workflow-target1
 
       - name: echo distinct ID ${{ github.event.inputs.distinct_id }}
         run: echo ${{ github.event.inputs.distinct_id }}
@@ -51,7 +51,7 @@ jobs:
         run: |
           gh workflow run codedeploy-mirastage.yml \
           --ref=multi_tenant_stage \
-          --repo prashant-cloudbolt/workflow-target
+          --repo prashant-cloudbolt/workflow-target1
 
       - name: echo distinct ID ${{ github.event.inputs.distinct_id }}
         run: echo ${{ github.event.inputs.distinct_id }}
