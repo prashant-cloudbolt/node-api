@@ -1,0 +1,29 @@
+name: public-web-mirastage-codedeploy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write 
+  contents: read
+  pull-requests: write
+  security-events: write
+  actions: read
+
+jobs:
+  codedeploy:
+    name: Trigger codedeploy with latest commit to Stage
+    runs-on: ubuntu-latest
+
+    environment:
+      name: STAGE
+
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout Repository
+
+      - name: Echo Branch name
+        run: |
+          branch_name="${GITHUB_REF#refs/heads/}"
+          echo "branch name is : $branch_name"
+          echo "ENV name is : ${{ vars.ENV }}"
