@@ -1,4 +1,5 @@
-name: public-web-dev-codedeploy
+name: node-api-dev-codedeploy
+
 on:
   workflow_dispatch:
     inputs:
