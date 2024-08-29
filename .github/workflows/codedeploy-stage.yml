@@ -4,10 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       codedeploy_rollback:
-        description: 'Trigger rollback in dependent workflow if value if True'
+        description: "Trigger rollback in dependent workflow if value if True"
         required: false
-      distinct_id:
-        description: "This input required to run the workflow from return-dispatch"
+        default: 'False'
+      # distinct_id:
+      #   description: "This input required to run the workflow from return-dispatch"
 
 permissions:
   id-token: write 
@@ -29,7 +30,7 @@ jobs:
         name: Checkout Repository
 
       - name: Get Commit Hash from Tag
-        if: ${{ github.event.inputs.codedeploy_rollback == 'True}}
+        if: ${{ github.event.inputs.codedeploy_rollback == 'True' }}
         id: commit_hash
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -62,7 +63,7 @@ jobs:
           echo "commit_hash=$commit_hash" >> $GITHUB_ENV
 
       - name: Display Results of Release, Tag, Hash
-        if: ${{ github.event.inputs.codedeploy_rollback == 'True}}
+        if: ${{ github.event.inputs.codedeploy_rollback == 'True' }}
         run: |
           echo "Branch Suffix: ${{ env.branch_suffix }}"
           echo "Current Release: ${{ env.latest_release }}"
@@ -83,5 +84,5 @@ jobs:
 
           echo "commit_hash=$commit_hash"
 
-      - name: echo distinct ID ${{ github.event.inputs.distinct_id }}
-        run: echo ${{ github.event.inputs.distinct_id }}
+      # - name: echo distinct ID ${{ github.event.inputs.distinct_id }}
+      #   run: echo ${{ github.event.inputs.distinct_id }}
