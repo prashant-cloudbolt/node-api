@@ -17,16 +17,19 @@ permissions:
   actions: read
 
 jobs:
-  get_commitid:
-    if: ${{ github.event.inputs.codedeploy_rollback == 'True' }}
+  codedeploy:
+    name: Trigger codedeploy with latest commit to Stage
     runs-on: ubuntu-latest
-    outputs:
-      commit_hash: ${{ steps.commit_hash.outputs.commit_hash }}
+
+    environment:
+      name: STAGE
+
     steps:
       - uses: actions/checkout@v4
         name: Checkout Repository
 
       - name: Get Commit Hash from Tag
+        if: ${{ github.event.inputs.codedeploy_rollback == 'True}}
         id: commit_hash
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -59,23 +62,12 @@ jobs:
           echo "commit_hash=$commit_hash" >> $GITHUB_ENV
 
       - name: Display Results of Release, Tag, Hash
+        if: ${{ github.event.inputs.codedeploy_rollback == 'True}}
         run: |
           echo "Branch Suffix: ${{ env.branch_suffix }}"
           echo "Current Release: ${{ env.latest_release }}"
           echo "Current Release Tag: ${{ env.release_tag }}"
           echo "Commit Hash of Tag: ${{ env.commit_hash }}"
-
-  codedeploy:
-    name: Trigger codedeploy with latest commit to Stage
-    runs-on: ubuntu-latest
-    needs: get_commitid
-
-    environment:
-      name: STAGE
-
-    steps:
-      - uses: actions/checkout@v4
-        name: Checkout Repository
 
       - name: Echo Branch name
         run: |
@@ -83,10 +75,10 @@ jobs:
           echo "branch name is : $branch_name"
           echo "ENV name is : ${{ vars.ENV }}"
 
-          if [ -z "${{ needs.get_commitid.outputs.commit_hash }}" ]; then
+          if [ -z "${{ env.commit_hash }}" ]; then
             commit_hash=$(git rev-parse HEAD)
           else
-            commit_hash=${{ needs.get_commitid.outputs.commit_hash }}
+            commit_hash=${{ env.commit_hash }}
           fi
 
           echo "commit_hash=$commit_hash"
