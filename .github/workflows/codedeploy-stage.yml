@@ -3,6 +3,9 @@ name: node-api-stage-codedeploy
 on:
   workflow_dispatch:
     inputs:
+      codedeploy_rollback:
+        description: 'Trigger rollback in dependent workflow if value if True'
+        required: false
       distinct_id:
         description: "This input required to run the workflow from return-dispatch"
 
@@ -25,11 +28,11 @@ jobs:
       - uses: actions/checkout@v4
         name: Checkout Repository
 
-      - name: Echo Branch name
-        run: |
-          branch_name="${GITHUB_REF#refs/heads/}"
-          echo "branch name is : $branch_name"
-          echo "ENV name is : ${{ vars.ENV }}"
+      - name: Set env codedeploy_rollback
+        run: echo "codedeploy_rollback=${{ inputs.codedeploy_rollback }}" >> $GITHUB_ENV
+
+      - name: Print codedeploy_rollback env
+        run: echo "Rollback env is ${{ inputs.codedeploy_rollback }}"
 
       - name: echo distinct ID ${{ github.event.inputs.distinct_id }}
         run: echo ${{ github.event.inputs.distinct_id }}
