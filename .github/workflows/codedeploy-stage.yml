@@ -7,8 +7,8 @@ on:
         description: "Trigger rollback in dependent workflow if value if True"
         required: false
         default: 'False'
-      # distinct_id:
-      #   description: "This input required to run the workflow from return-dispatch"
+      distinct_id:
+        description: "This input required to run the workflow from return-dispatch"
 
 permissions:
   id-token: write 
@@ -84,5 +84,5 @@ jobs:
 
           echo "commit_hash=$commit_hash"
 
-      # - name: echo distinct ID ${{ github.event.inputs.distinct_id }}
-      #   run: echo ${{ github.event.inputs.distinct_id }}
+      - name: echo distinct ID ${{ github.event.inputs.distinct_id }}
+        run: echo ${{ github.event.inputs.distinct_id }}
