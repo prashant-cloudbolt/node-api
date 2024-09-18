@@ -44,6 +44,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRETS_KEY }}
           aws-region: us-east-1
 
+      - name: list of folder
+        run: |
+          ls -l
+
       - name: Create S3 bucket and upload feature flag
         continue-on-error: true
         uses: ./mira-serverless/.github/actions/s3-feature-flag
