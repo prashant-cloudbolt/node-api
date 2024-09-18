@@ -44,12 +44,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRETS_KEY }}
           aws-region: us-east-1
 
+      - name: Check current working directory
+        run: pwd
+
       - name: list of folder
-        run: |
-          ls -l
-          ls -l mira-serverless
-          ls -l mira-serverless/scripts
-          chmod +x mira-serverless/scripts/verify_feature_flag_change.sh
+        run: ls -l mira-serverless/scripts
 
       - name: Create S3 bucket and upload feature flag
         continue-on-error: true
