@@ -47,6 +47,8 @@ jobs:
       - name: list of folder
         run: |
           ls -l
+          ls -l mira-serverless
+          ls -l mira-serverless/scripts
 
       - name: Create S3 bucket and upload feature flag
         continue-on-error: true
