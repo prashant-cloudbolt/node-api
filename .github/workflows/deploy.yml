@@ -1,0 +1,54 @@
+name: Deploy Mira Serverless Application
+run-name: Deploy ${{ inputs.environment }} Mira Serverless Application
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        default: "Production"
+        type: choice
+        options:
+          - "Staging"
+          - "Production"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  s3-feature-flag:
+    name: S3 Feature Flag
+    runs-on: ubuntu-latest
+
+    environment:
+      name: ${{ inputs.environment }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Checkout Mira Serverless
+        uses: actions/checkout@v4
+        with:
+          repository: prashant-cloudbolt/api
+          ref: multi_tenant_stage
+          token: ${{ secrets.GH_TOKEN }}
+          path: mira-serverless
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRETS_KEY }}
+          aws-region: us-east-1
+
+      - name: Create S3 bucket and upload feature flag
+        continue-on-error: true
+        uses: ./mira-serverless/.github/actions/s3-feature-flag
+        with:
+          environment: ${{ inputs.environment }}
+          feature-flag-s3-bucket: ${{ vars.FEATURE_FLAG_S3_BUCKET }}
+          feature-flag-file-name: ${{ vars.FEATURE_FLAG_FILE_NAME }}
+          working-directory: "."
